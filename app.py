@@ -28,6 +28,29 @@ class QueueGarageApp:
         tk.Label(self.input_frame, text="Plate Number:").grid(row=0, column=0)
         self.plate_entry = ttk.Entry(self.input_frame)
         self.plate_entry.grid(row=0, column=1, padx=5)
+        
+    def update_display(self):
+        self.listbox.delete(0, tk.END)
+        for i, car in enumerate(self.garage):
+            prefix = "[EXIT NEXT] ->" if i == 0 else f"[{i+1}]"
+            self.listbox.insert(tk.END, f" {prefix} {car['plate']} (Arrived: {car['arrival']})")
+
+    def handle_arrival(self):
+        if len(self.garage) >= self.MAX_CAPACITY:
+            messagebox.showwarning("Garage Full", "Maximum capacity of 10 reached!")
+            return
+
+        plate = self.plate_entry.get().upper().strip()
+        if not plate:
+            messagebox.showwarning("Input Error", "Please enter a plate number.")
+            return
+
+        arrival_time = datetime.now().strftime("%H:%M:%S")
+        # Enqueue: Add to the end of the list
+        self.garage.append({"plate": plate, "arrival": arrival_time})
+        
+        self.update_display()
+        self.plate_entry.delete(0, tk.END)
 
 if __name__ == "__main__":
     root = tk.Tk()
