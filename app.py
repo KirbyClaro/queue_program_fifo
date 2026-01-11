@@ -51,6 +51,36 @@ class QueueGarageApp:
         
         self.update_display()
         self.plate_entry.delete(0, tk.END)
+        
+    def handle_departure(self):
+        if not self.garage:
+            messagebox.showerror("Empty", "The garage is currently empty.")
+            return
+
+        confirm_plate = self.plate_entry.get().upper().strip()
+        if not confirm_plate:
+            messagebox.showinfo("Instruction", "Enter the plate of the car at the exit to confirm departure.")
+            return
+
+        # FIFO: The car at index 0 is the one at the front
+        front_car = self.garage[0]
+
+        if confirm_plate == front_car['plate']:
+            # Dequeue: Remove from the front (index 0)
+            removed = self.garage.pop(0)
+            self.update_display()
+            self.plate_entry.delete(0, tk.END)
+            
+            messagebox.showinfo("Departure Receipt", 
+                f"--- PARKING RECEIPT ---\n"
+                f"Plate: {removed['plate']}\n"
+                f"Arrival: {removed['arrival']}\n"
+                f"Departure: {datetime.now().strftime('%H:%M:%S')}\n"
+                f"Status: Safely Departed")
+        else:
+            messagebox.showerror("Queue Blocked", 
+                f"Error: Car {confirm_plate} cannot leave yet.\n"
+                f"Car {front_car['plate']} is at the front and must leave first.")
 
 if __name__ == "__main__":
     root = tk.Tk()
