@@ -7,6 +7,14 @@ class QueueGarageApp:
         self.root = root
         self.root.title("FIFO Parking Management")
         self.root.geometry("450x550")
+        self.btn_frame = tk.Frame(root)
+        self.btn_frame.pack(pady=15)
+
+        self.park_btn = ttk.Button(self.btn_frame, text="Park Car", command=self.handle_arrival)
+        self.park_btn.grid(row=0, column=0, padx=5)
+
+        self.depart_btn = ttk.Button(self.btn_frame, text="Depart Car", command=self.handle_departure)
+        self.depart_btn.grid(row=0, column=1, padx=5)
         
         # FIFO Logic: First-In, First-Out
         self.garage = []
